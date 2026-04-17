@@ -1,0 +1,1 @@
+-keep class com.carless.driverapp.data.model.** { *; }

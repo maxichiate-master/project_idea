@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "796777634703",
+    "project_id": "projectidea-99f79",
+    "storage_bucket": "projectidea-99f79.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796777634703:android:db6caf6c8fc905173fc9fa",
+        "android_client_info": {
+          "package_name": "com.carless.driverapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgzip10QCi2O61OjuVeab1eT_lbDzIv-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
