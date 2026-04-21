@@ -42,6 +42,12 @@ class PassengerHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, DriverUpgradeActivity::class.java))
         }
 
+        binding.btnLogout.setOnClickListener {
+            SessionManager(this).logout()
+            startActivity(Intent(this, com.carless.driverapp.ui.auth.LoginActivity::class.java))
+            finishAffinity()
+        }
+
         viewModel.isLoading.observe(this) { loading ->
             binding.btnRequestDriver.isEnabled = !loading
             binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
