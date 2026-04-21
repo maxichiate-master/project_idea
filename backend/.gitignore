@@ -1,0 +1,8 @@
+target/
+*.class
+*.jar
+*.war
+.idea/
+*.iml
+src/main/resources/firebase-adminsdk.json
+src/main/resources/application-prod.properties
