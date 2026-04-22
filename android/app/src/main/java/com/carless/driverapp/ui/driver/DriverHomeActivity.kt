@@ -47,6 +47,19 @@ class DriverHomeActivity : AppCompatActivity() {
         val zoneAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, Constants.CABA_ZONES)
         zoneAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerZone.adapter = zoneAdapter
+        binding.spinnerZone.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, pos: Int, id: Long) {
+                if (binding.switchOnline.isChecked) {
+                    val zone = parent.getItemAtPosition(pos).toString()
+                    viewModel.setOnlineStatus(true, zone)
+                    adapter.submitList(emptyList())
+                    binding.tvNoTrips.visibility = View.GONE
+                    handler.removeCallbacks(pollRunnable)
+                    handler.post(pollRunnable)
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) = Unit
+        }
 
         adapter = TripRequestAdapter { trip -> viewModel.acceptTrip(trip.id) }
         binding.rvTripRequests.layoutManager = LinearLayoutManager(this)
