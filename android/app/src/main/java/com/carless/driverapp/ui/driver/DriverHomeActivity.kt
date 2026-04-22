@@ -66,11 +66,6 @@ class DriverHomeActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.isLoading.observe(this) { loading ->
-            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
-            if (loading) binding.tvNoTrips.visibility = View.GONE
-        }
-
         viewModel.availableTrips.observe(this) { trips ->
             adapter.submitList(trips)
             binding.tvNoTrips.visibility = if (trips.isEmpty()) View.VISIBLE else View.GONE
