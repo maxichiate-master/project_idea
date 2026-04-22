@@ -17,9 +17,9 @@ public class DriverProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin"})
+    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin", "hibernateLazyInitializer", "handler"})
     private User user;
 
     @Column(nullable = false)

@@ -19,14 +19,14 @@ public class TripRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "passenger_id", nullable = false)
-    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin"})
+    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin", "hibernateLazyInitializer", "handler"})
     private User passenger;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id")
-    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin"})
+    @JsonIgnoreProperties({"passwordHash", "fcmToken", "driverProfile", "admin", "hibernateLazyInitializer", "handler"})
     private User driver;
 
     @Column(nullable = false)
