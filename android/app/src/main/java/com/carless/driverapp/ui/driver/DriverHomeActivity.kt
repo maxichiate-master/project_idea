@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.carless.driverapp.databinding.ActivityDriverHomeBinding
+import com.carless.driverapp.ui.auth.LoginActivity
 import com.carless.driverapp.ui.trip.ActiveTripActivity
 import com.carless.driverapp.utils.Constants
 import com.carless.driverapp.utils.SessionManager
@@ -34,7 +35,14 @@ class DriverHomeActivity : AppCompatActivity() {
         binding = ActivityDriverHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.tvWelcome.text = "Hello, ${SessionManager(this).getName()}"
+        val session = SessionManager(this)
+        binding.tvWelcome.text = "Hello, ${session.getName()}"
+
+        binding.btnLogout.setOnClickListener {
+            session.logout()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finishAffinity()
+        }
 
         val zoneAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, Constants.CABA_ZONES)
         zoneAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
