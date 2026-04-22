@@ -29,6 +29,7 @@
         <activity android:name=".ui.driver.DriverHomeActivity" />
         <activity android:name=".ui.driver.DriverUpgradeActivity" />
         <activity android:name=".ui.driver.RatingActivity" />
+        <activity android:name=".ui.trip.ActiveTripActivity" />
 
         <service
             android:name=".service.DriverAppFcmService"

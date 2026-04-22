@@ -16,6 +16,7 @@ class TripRequestAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: TripResponse) {
             binding.tvPassenger.text = trip.passenger?.name ?: "Passenger"
+            binding.tvZone.text = "Zone: ${trip.zone}"
             binding.tvPickup.text = "From: ${trip.pickupAddress}"
             binding.tvDestination.text = "To: ${trip.destinationAddress}"
             binding.btnAccept.setOnClickListener { onAccept(trip) }

@@ -12,6 +12,7 @@ class DriverViewModel : ViewModel() {
     val driverProfile = MutableLiveData<Result<DriverProfile>>()
     val availableTrips = MutableLiveData<List<TripResponse>>()
     val tripAction = MutableLiveData<Result<TripResponse>>()
+    val activeTrip = MutableLiveData<TripResponse?>()
     val isLoading = MutableLiveData(false)
     private val api = ApiClient.getService()
 
@@ -46,6 +47,17 @@ class DriverViewModel : ViewModel() {
                 availableTrips.value = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
             } catch (e: Exception) {
                 availableTrips.value = emptyList()
+            }
+        }
+    }
+
+    fun checkActiveTrip() {
+        viewModelScope.launch {
+            try {
+                val response = api.getActiveTrip()
+                activeTrip.value = if (response.isSuccessful) response.body() else null
+            } catch (e: Exception) {
+                activeTrip.value = null
             }
         }
     }

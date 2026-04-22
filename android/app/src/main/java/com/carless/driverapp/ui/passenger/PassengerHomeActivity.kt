@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.carless.driverapp.databinding.ActivityPassengerHomeBinding
 import com.carless.driverapp.ui.driver.DriverUpgradeActivity
+import com.carless.driverapp.ui.trip.ActiveTripActivity
 import com.carless.driverapp.utils.Constants
 import com.carless.driverapp.utils.SessionManager
 
@@ -55,9 +56,10 @@ class PassengerHomeActivity : AppCompatActivity() {
 
         viewModel.tripCreated.observe(this) { result ->
             result.onSuccess { trip ->
-                val intent = Intent(this, TripStatusActivity::class.java)
-                intent.putExtra("tripId", trip.id)
-                startActivity(intent)
+                startActivity(Intent(this, ActiveTripActivity::class.java).apply {
+                    putExtra("tripId", trip.id)
+                    putExtra("isDriver", false)
+                })
             }.onFailure {
                 Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }

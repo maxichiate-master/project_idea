@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.carless.driverapp.data.model.TripResponse
 import com.carless.driverapp.databinding.ActivityDriverHomeBinding
+import com.carless.driverapp.ui.trip.ActiveTripActivity
 import com.carless.driverapp.utils.Constants
 import com.carless.driverapp.utils.SessionManager
 
@@ -21,11 +21,10 @@ class DriverHomeActivity : AppCompatActivity() {
     private val viewModel: DriverViewModel by viewModels()
     private lateinit var adapter: TripRequestAdapter
     private val handler = Handler(Looper.getMainLooper())
-    private var activeTripId: Long? = null
 
     private val pollRunnable = object : Runnable {
         override fun run() {
-            if (activeTripId == null) viewModel.loadAvailableTrips()
+            viewModel.loadAvailableTrips()
             handler.postDelayed(this, 5000)
         }
     }
@@ -55,6 +54,7 @@ class DriverHomeActivity : AppCompatActivity() {
                 viewModel.setOnlineStatus(false)
                 handler.removeCallbacks(pollRunnable)
                 adapter.submitList(emptyList())
+                binding.tvNoTrips.visibility = View.GONE
             }
         }
 
@@ -64,43 +64,27 @@ class DriverHomeActivity : AppCompatActivity() {
         }
 
         viewModel.tripAction.observe(this) { result ->
-            result.onSuccess { trip -> showActiveTripUI(trip) }
-                .onFailure { Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show() }
-        }
-
-        binding.btnStartTrip.setOnClickListener { activeTripId?.let { viewModel.startTrip(it) } }
-        binding.btnCompleteTrip.setOnClickListener { activeTripId?.let { viewModel.completeTrip(it) } }
-    }
-
-    private fun showActiveTripUI(trip: TripResponse) {
-        activeTripId = trip.id
-        binding.cardActiveTrip.visibility = View.VISIBLE
-        binding.rvTripRequests.visibility = View.GONE
-        binding.tvNoTrips.visibility = View.GONE
-        binding.tvPassengerName.text = trip.passenger?.name ?: "Passenger"
-        binding.tvPassengerPhone.text = trip.passenger?.phone ?: ""
-        binding.tvPickupLabel.text = "Pickup: ${trip.pickupAddress}"
-        binding.tvDestinationLabel.text = "To: ${trip.destinationAddress}"
-
-        when (trip.status) {
-            "ACCEPTED" -> {
-                binding.btnStartTrip.visibility = View.VISIBLE
-                binding.btnCompleteTrip.visibility = View.GONE
-            }
-            "IN_PROGRESS" -> {
-                binding.btnStartTrip.visibility = View.GONE
-                binding.btnCompleteTrip.visibility = View.VISIBLE
-            }
-            "COMPLETED" -> {
-                activeTripId = null
-                startActivity(Intent(this, RatingActivity::class.java).apply {
+            result.onSuccess { trip ->
+                handler.removeCallbacks(pollRunnable)
+                startActivity(Intent(this, ActiveTripActivity::class.java).apply {
                     putExtra("tripId", trip.id)
-                    putExtra("ratedName", trip.passenger?.name ?: "your passenger")
+                    putExtra("isDriver", true)
                 })
-                binding.cardActiveTrip.visibility = View.GONE
-                binding.rvTripRequests.visibility = View.VISIBLE
+            }.onFailure {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Resume an active trip if the driver restarts the app mid-trip
+        viewModel.activeTrip.observe(this) { trip ->
+            if (trip != null && trip.status in listOf("ACCEPTED", "IN_PROGRESS")) {
+                startActivity(Intent(this, ActiveTripActivity::class.java).apply {
+                    putExtra("tripId", trip.id)
+                    putExtra("isDriver", true)
+                })
+            }
+        }
+        viewModel.checkActiveTrip()
     }
 
     override fun onDestroy() {
