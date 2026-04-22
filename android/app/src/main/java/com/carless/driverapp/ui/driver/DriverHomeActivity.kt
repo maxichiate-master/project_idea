@@ -95,6 +95,14 @@ class DriverHomeActivity : AppCompatActivity() {
         viewModel.checkActiveTrip()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (binding.switchOnline.isChecked) {
+            handler.removeCallbacks(pollRunnable)
+            handler.post(pollRunnable)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(pollRunnable)

@@ -14,10 +14,10 @@ class TripViewModel : ViewModel() {
     val isLoading = MutableLiveData(false)
     private val api = ApiClient.getService()
 
-    fun pollTrip() {
+    fun pollTrip(tripId: Long) {
         viewModelScope.launch {
             try {
-                val response = api.getActiveTrip()
+                val response = api.getTrip(tripId)
                 trip.value = if (response.isSuccessful) response.body() else null
             } catch (e: Exception) {
                 // keep last known state on transient errors

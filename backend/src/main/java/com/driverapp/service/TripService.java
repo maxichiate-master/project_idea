@@ -140,6 +140,16 @@ public class TripService {
         return ratingRepository.save(rating);
     }
 
+    public TripRequest getTrip(User user, Long id) {
+        TripRequest trip = getTripOrThrow(id);
+        boolean isPassenger = trip.getPassenger().getId().equals(user.getId());
+        boolean isDriver = trip.getDriver() != null && trip.getDriver().getId().equals(user.getId());
+        if (!isPassenger && !isDriver) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your trip");
+        }
+        return trip;
+    }
+
     public TripRequest getActiveTrip(User user) {
         return tripRequestRepository.findFirstByPassengerAndStatusIn(user, ACTIVE_STATUSES)
                 .or(() -> tripRequestRepository.findFirstByDriverAndStatusIn(user, List.of(TripStatus.ACCEPTED, TripStatus.IN_PROGRESS)))

@@ -39,6 +39,9 @@ interface ApiService {
     @GET("trips/active")
     suspend fun getActiveTrip(): Response<TripResponse>
 
+    @GET("trips/{id}")
+    suspend fun getTrip(@Path("id") id: Long): Response<TripResponse>
+
     @POST("trips/{id}/cancel")
     suspend fun cancelTrip(@Path("id") id: Long): Response<TripResponse>
 

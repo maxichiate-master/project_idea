@@ -22,7 +22,7 @@ class ActiveTripActivity : AppCompatActivity() {
 
     private val pollRunnable = object : Runnable {
         override fun run() {
-            viewModel.pollTrip()
+            viewModel.pollTrip(tripId)
             handler.postDelayed(this, 5000)
         }
     }
