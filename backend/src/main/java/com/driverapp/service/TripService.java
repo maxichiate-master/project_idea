@@ -142,6 +142,7 @@ public class TripService {
 
     public TripRequest getActiveTrip(User user) {
         return tripRequestRepository.findFirstByPassengerAndStatusIn(user, ACTIVE_STATUSES)
+                .or(() -> tripRequestRepository.findFirstByDriverAndStatusIn(user, List.of(TripStatus.ACCEPTED, TripStatus.IN_PROGRESS)))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No active trip"));
     }
 
