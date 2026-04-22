@@ -42,11 +42,14 @@ class DriverViewModel : ViewModel() {
 
     fun loadAvailableTrips() {
         viewModelScope.launch {
+            isLoading.value = true
             try {
                 val response = api.getAvailableRequests()
                 availableTrips.value = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
             } catch (e: Exception) {
                 availableTrips.value = emptyList()
+            } finally {
+                isLoading.value = false
             }
         }
     }
