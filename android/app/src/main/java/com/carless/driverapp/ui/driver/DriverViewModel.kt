@@ -34,20 +34,29 @@ class DriverViewModel : ViewModel() {
         }
     }
 
-    fun setOnlineStatus(online: Boolean, zone: String? = null) {
+    fun goOnline(zone: String) {
         viewModelScope.launch {
-            try { api.setDriverStatus(DriverOnlineRequest(online, zone)) } catch (e: Exception) { /* ignore */ }
+            try { api.setDriverStatus(DriverOnlineRequest(true, zone)) } catch (e: Exception) { /* ignore */ }
+            loadAvailableTripsNow()
+        }
+    }
+
+    fun setOffline() {
+        viewModelScope.launch {
+            try { api.setDriverStatus(DriverOnlineRequest(false, null)) } catch (e: Exception) { /* ignore */ }
         }
     }
 
     fun loadAvailableTrips() {
-        viewModelScope.launch {
-            try {
-                val response = api.getAvailableRequests()
-                availableTrips.value = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
-            } catch (e: Exception) {
-                availableTrips.value = emptyList()
-            }
+        viewModelScope.launch { loadAvailableTripsNow() }
+    }
+
+    private suspend fun loadAvailableTripsNow() {
+        try {
+            val response = api.getAvailableRequests()
+            availableTrips.value = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
+        } catch (e: Exception) {
+            availableTrips.value = emptyList()
         }
     }
 

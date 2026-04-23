@@ -51,11 +51,11 @@ class DriverHomeActivity : AppCompatActivity() {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, pos: Int, id: Long) {
                 if (binding.switchOnline.isChecked) {
                     val zone = parent.getItemAtPosition(pos).toString()
-                    viewModel.setOnlineStatus(true, zone)
                     adapter.submitList(emptyList())
                     binding.tvNoTrips.visibility = View.GONE
                     handler.removeCallbacks(pollRunnable)
-                    handler.post(pollRunnable)
+                    handler.postDelayed(pollRunnable, 5000)
+                    viewModel.goOnline(zone)
                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) = Unit
@@ -68,11 +68,11 @@ class DriverHomeActivity : AppCompatActivity() {
         binding.switchOnline.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 binding.spinnerZone.visibility = View.VISIBLE
-                viewModel.setOnlineStatus(true, binding.spinnerZone.selectedItem.toString())
-                handler.post(pollRunnable)
+                viewModel.goOnline(binding.spinnerZone.selectedItem.toString())
+                handler.postDelayed(pollRunnable, 5000)
             } else {
                 binding.spinnerZone.visibility = View.GONE
-                viewModel.setOnlineStatus(false)
+                viewModel.setOffline()
                 handler.removeCallbacks(pollRunnable)
                 adapter.submitList(emptyList())
                 binding.tvNoTrips.visibility = View.GONE
